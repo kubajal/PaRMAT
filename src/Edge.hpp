@@ -5,19 +5,16 @@
 
 #include "internal_config.hpp"
 
-
 class Edge{
 
-protected:
-	// Two members standing for source vertex index and destination vertex index.
-	// The type of these two member variables can be found at internal_config.hpp.
-	EdgeIndexType src, dst;
-
 public:
+	EdgeIndexType src, dst;
+	int meeting_timestamp;
+	int meeting_duration;
+	Edge(EdgeIndexType rec_src, EdgeIndexType rec_dst, int timestamp, int duration);
 	~Edge(){}
 
 	Edge(){}
-	Edge(EdgeIndexType rec_src, EdgeIndexType rec_dst);
 	Edge(const Edge &cSource);
 
 	Edge& operator= (const Edge &cSource);

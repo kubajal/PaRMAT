@@ -147,6 +147,11 @@ void generate_edges( Square& squ,
 		std::uniform_int_distribution<>& dis, std::mt19937_64& gen,
 		std::vector<unsigned long long>& duplicate_indices ) {
 
+	std::default_random_engine generator1;
+	std::default_random_engine generator2;
+	std::uniform_int_distribution<int> timestamp_distribution(0, 5);
+	std::uniform_int_distribution<int> duration_distribution(6, 10);
+
 	auto applyCondition = directedGraph || ( squ.get_H_idx() < squ.get_V_idx() ); // true: if the graph is directed or in case it is undirected, the square belongs to the lower triangle of adjacency matrix. false: the diagonal passes the rectangle and the graph is undirected.
 	auto createNewEdges = duplicate_indices.empty();
 	unsigned long long nEdgesToGen = createNewEdges ? squ.getnEdges() : duplicate_indices.size();
@@ -155,10 +160,15 @@ void generate_edges( Square& squ,
 		unsigned long long v_idx = genEdgeIndex_FP(squ.get_Y_start(), squ.get_Y_end(), RMAT_a, RMAT_b, std::ref(dis), std::ref(gen));
 		if( (!applyCondition && h_idx > v_idx) || (!allowEdgeToSelf && h_idx == v_idx ) ) // Short-circuit if it doesn't pass the test.
 			continue;
-		if( createNewEdges )	// Create new edges.
-			edgesVec.push_back(	Edge( h_idx, v_idx ) );
-		else	// Replace non-valids.
-			edgesVec[duplicate_indices[edgeIdx]] = ( Edge( h_idx, v_idx ) );
+    int meeting_timestamp = timestamp_distribution(generator1) % 100;
+    int meeting_duration = duration_distribution(generator2) % 1000;
+    // std::cout << squ.get_X_start() << " " << squ.get_X_end() << " " << squ.get_Y_start() << " " << squ.get_Y_end() << "\n";
+		if( createNewEdges )	{ // Create new edges.
+			edgesVec.push_back(	Edge( h_idx, v_idx, meeting_timestamp, meeting_duration) );
+    }
+    else	{ // Replace non-valids.
+      edgesVec[duplicate_indices[edgeIdx]] = ( Edge( h_idx, v_idx, meeting_timestamp, meeting_duration ) );
+    }
 		++edgeIdx;
 	}
 
