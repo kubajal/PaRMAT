@@ -27,6 +27,10 @@ void EachThreadGeneratesEdges(
 	std::random_device rd;
 	std::mt19937_64 gen(rd());
 	std::uniform_int_distribution<> dis;
+	std::default_random_engine timestamp_gen;
+	std::default_random_engine duration_gen;
+	std::uniform_int_distribution<> timestamp_distribution(0,10000000); // in seconds, ... = 3 months
+	std::uniform_int_distribution<> duration_distribution(3600, 18000); // in seconds, ... = (1h, 5h)
 
 	// Reserve enough memory once.
 	unsigned long long nEdgesToAllocate = 0;
@@ -39,7 +43,21 @@ void EachThreadGeneratesEdges(
 	// For all the rectangles we have to generate edge for.
 	for( auto& rec: recs ) {
 
-		generate_edges( std::ref(rec), std::ref(edgesVec), RMAT_a, RMAT_b, RMAT_c, directedGraph, allowEdgeToSelf, std::ref(dis), std::ref(gen), std::ref(throwAwayEdgesIndices) );
+		generate_edges( 
+      std::ref(rec), 
+      std::ref(edgesVec), 
+      RMAT_a, 
+      RMAT_b, 
+      RMAT_c, 
+      directedGraph, 
+      allowEdgeToSelf, 
+      std::ref(dis), 
+      std::ref(gen), 
+      std::ref(timestamp_distribution), 
+      std::ref(timestamp_gen), 
+      std::ref(duration_distribution), 
+      std::ref(duration_gen), 
+      std::ref(throwAwayEdgesIndices));
 
 		if( !allowDuplicateEdges ) {
 
@@ -58,7 +76,21 @@ void EachThreadGeneratesEdges(
 
 				if( !throwAwayEdgesIndices.empty() ) {
 					// Add instead of eliminated and check until generate enough.
-					generate_edges( std::ref(rec), std::ref(edgesVec), RMAT_a, RMAT_b, RMAT_c, directedGraph, allowEdgeToSelf, std::ref(dis), std::ref(gen), std::ref(throwAwayEdgesIndices) );
+					generate_edges( 
+            std::ref(rec), 
+            std::ref(edgesVec), 
+            RMAT_a, 
+            RMAT_b, 
+            RMAT_c, 
+            directedGraph, 
+            allowEdgeToSelf, 
+            std::ref(dis), 
+            std::ref(gen), 
+            std::ref(timestamp_distribution), 
+            std::ref(timestamp_gen), 
+            std::ref(duration_distribution), 
+            std::ref(duration_gen),
+            std::ref(throwAwayEdgesIndices) );
 					// Sort edge vector if there are duplicates or self-edges.
 					std::sort( edgesVec.end()-rec.getnEdges(), edgesVec.end() );
 				}

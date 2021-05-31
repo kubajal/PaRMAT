@@ -21,7 +21,7 @@ static const double MIN_RAM_PORTION_USAGE = 0.01, MAX_RAM_PORTION_USAGE = 0.9;
 static const bool SHOW_PROGRESS_BARS = true;
 
 // Set if you would like to see the details of assignment of edges to squares.
-static const bool SHOW_SQUARES_DETAILS = false;
+static const bool SHOW_SQUARES_DETAILS = true;
 
 // Enabling it makes the sorted output get created by "futures" instead of using explicit threads.
 static const bool USE_FUTURES_INSTEAD_OF_EXPLICIT_THREADS = false;

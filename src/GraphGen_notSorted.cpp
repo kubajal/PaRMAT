@@ -26,8 +26,27 @@ void fill_up_edge_vector(
 
 	std::vector<unsigned long long> throwAwayEdgesIndices; // Indices for those edges that must be eliminated due to duplicates and/or having same destination and source index.
 
+	std::default_random_engine timestamp_gen;
+	std::default_random_engine duration_gen;
+	std::uniform_int_distribution<> timestamp_distribution(0,10000000); // in seconds, ... = 3 months
+	std::uniform_int_distribution<> duration_distribution(3600, 18000); // in seconds, ... = (1h, 5h)
+
 	edgeVector.reserve(rec.getnEdges());
-	generate_edges( std::ref(rec), std::ref(edgeVector), RMAT_a, RMAT_b, RMAT_c, directedGraph, allowEdgeToSelf, std::ref(dis), std::ref(gen), std::ref(throwAwayEdgesIndices) );
+	generate_edges( 
+    std::ref(rec), 
+    std::ref(edgeVector), 
+    RMAT_a, 
+    RMAT_b, 
+    RMAT_c, 
+    directedGraph, 
+    allowEdgeToSelf, 
+    std::ref(dis), 
+    std::ref(gen), 
+    std::ref(timestamp_distribution), 
+    std::ref(timestamp_gen), 
+    std::ref(duration_distribution), 
+    std::ref(duration_gen),
+    std::ref(throwAwayEdgesIndices) );
 
 	if( !allowDuplicateEdges ) {
 
@@ -44,7 +63,21 @@ void fill_up_edge_vector(
 
 			// Add instead of eliminated and check until generate enough.
 			if( !throwAwayEdgesIndices.empty() )
-				generate_edges( std::ref(rec), std::ref(edgeVector), RMAT_a, RMAT_b, RMAT_c, directedGraph, allowEdgeToSelf, std::ref(dis), std::ref(gen), std::ref(throwAwayEdgesIndices) );
+				generate_edges( 
+          std::ref(rec), 
+          std::ref(edgeVector), 
+          RMAT_a, 
+          RMAT_b, 
+          RMAT_c, 
+          directedGraph, 
+          allowEdgeToSelf, 
+          std::ref(dis), 
+          std::ref(gen), 
+          std::ref(timestamp_distribution), 
+          std::ref(timestamp_gen), 
+          std::ref(duration_distribution), 
+          std::ref(duration_gen),
+          std::ref(throwAwayEdgesIndices) );
 
 		} while( !throwAwayEdgesIndices.empty() );
 
